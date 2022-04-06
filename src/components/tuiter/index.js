@@ -20,7 +20,7 @@ import Chat from "../chat/Chat";
 function Tuiter () {
   return(
     <HashRouter>
-      <div className="container">
+      <div className="container-fluid">
         <div className="ttr-tuiter">
           <div className="ttr-left-column">
             <Navigation/>
