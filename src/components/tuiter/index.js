@@ -43,7 +43,7 @@ function Tuiter () {
               <Route path="/profile/edit" element={<EditProfile/>}/>
               <Route path="/more" element={<More/>}/>
               <Route path="/tuit/:tid" element={<TuitScreen/>}/>
-              <Route path="/chats" element={<Chat/>}/>
+              <Route path="/chats/*" element={<Chat/>}/>
             </Routes>
           </div>
           <div className="ttr-right-column">

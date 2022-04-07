@@ -1,6 +1,6 @@
 // cited from: https://gist.github.com/muhammadawaisshaikh/542f9cff88caaed33e2b601142b7b0e0
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -11,17 +11,17 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
-import Fab from '@material-ui/core/Fab';
-import SendIcon from '@material-ui/icons/Send';
-import {Badge} from "@mui/material";
+import ChatHistoryList from "./ChatHistoryList";
+import {Route, Routes, useLocation, useNavigate} from "react-router-dom";
+import ChatWindow from "./ChatWindow";
 
 const useStyles = makeStyles({
     table: {
-        minWidth: 650,
+        minWidth: 550,
     },
-    chatWindow: {
+    chat: {
         width: '100%',
-        height: '100%',
+        height: '80vh',
         marginTop: '30px'
 
     },
@@ -34,18 +34,47 @@ const useStyles = makeStyles({
     messageArea: {
         height: '80vh',
         overflowY: 'auto'
-    }, listItemText: {
-        marginLeft: '6px'
     }
-
 });
 
+const colors = ['olive', 'skyblue', 'seagreen', 'salmon', 'mediumpurple', 'orangered', 'darkgrey']
+
 const Chat = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
     const classes = useStyles();
+
+    const [chattedUserList, setChattedUserList] = useState(null);
+
+    const initChat = () => {
+        setChattedUserList([{
+            "_id": "6214fda11beae98f3b39cd51",
+            "username": "charlie",
+            "color" : colors[0]
+        }, {
+            "_id": "6214fdbf1beae98f3b39cd53",
+            "username": "nasa",
+            "color" : colors[1]
+        }, {
+            "_id": "6214fdbf1beae98f3b39cd55",
+            "username": "Alice",
+            "color" : colors[2]
+        }, {
+            "_id": "6214fdbf1beae98f3b39cd57",
+            "username": "Bob",
+            "color" : colors[3]
+        }, {
+            "_id": "6214fdbf1beae98f3b39cd57",
+            "username": "Peter",
+            "color" : colors[4]
+        }]);
+    }
+
+    useEffect(initChat, []);
 
     return (
         <div>
-            <Grid container component={Paper} className={classes.chatWindow}>
+            <Grid container component={Paper} className={classes.chat}>
                 <Grid item xs={3} className={classes.borderRight500}>
                     <List>
                         <ListItem>
@@ -61,79 +90,15 @@ const Chat = () => {
                     </Grid>
                     <Divider/>
                     <List>
-                        <ListItem button key="RemySharp">
-                            <Badge
-                                color="primary" badgeContent={10} anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            >
-                                <Avatar style={{backgroundColor: "olive"}}>RS</Avatar>
-                            </Badge>
-                                <ListItemText classes={{primary: classes.listItemText}} primary="Remy Sharp">Remy
-                                    Sharp</ListItemText>
-                        </ListItem>
-                        <ListItem button key="Alice">
-                            <Avatar style={{backgroundColor: "seagreen"}}>A</Avatar>
-                            <ListItemText classes={{primary: classes.listItemText}} primary="Alice">Alice</ListItemText>
-                        </ListItem>
-                        <ListItem button key="CindyBaker">
-                            <Avatar style={{backgroundColor: "skyblue"}}>CB</Avatar>
-                            <ListItemText classes={{primary: classes.listItemText}} primary="Cindy Baker">Cindy
-                                Baker</ListItemText>
-                        </ListItem>
+                        {chattedUserList &&
+                            chattedUserList.map(user => <ChatHistoryList key={user._id + 'ch'} username={user.username}
+                            color={user.color} userID={user._id}/>)
+                        }
                     </List>
                 </Grid>
-                <Grid item xs={9}>
-                    <List className={classes.messageArea}>
-                        <ListItem key="CindyBaker">
-                            <Avatar style={{backgroundColor: "skyblue"}}>CB</Avatar>
-                            <ListItemText classes={{primary: classes.listItemText}} primary="Cindy Baker">Cindy
-                                Baker</ListItemText>
-                        </ListItem>
-                        <Divider style={{backgroundColor: 'black'}}/>
-                        <ListItem key="1">
-                            <Grid container>
-                                <Grid item xs={12}>
-                                    <ListItemText align="right" primary="Hey man, What's up ?"/>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <ListItemText align="right" secondary="09:30"/>
-                                </Grid>
-                            </Grid>
-                        </ListItem>
-                        <ListItem key="2">
-                            <Grid container>
-                                <Grid item xs={12}>
-                                    <ListItemText align="left" primary="Hey, Iam Good! What about you ?"/>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <ListItemText align="left" secondary="09:31"/>
-                                </Grid>
-                            </Grid>
-                        </ListItem>
-                        <ListItem key="3">
-                            <Grid container>
-                                <Grid item xs={12}>
-                                    <ListItemText align="right" primary="Cool. i am good, let's catch up!"/>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <ListItemText align="right" secondary="10:30"/>
-                                </Grid>
-                            </Grid>
-                        </ListItem>
-                    </List>
-                    <Divider/>
-                    <Grid container style={{padding: '20px'}}>
-                        <Grid item xs={11}>
-                            <TextField id="outlined-basic-email" multiline label="Write a message..." fullWidth/>
-                        </Grid>
-                        <Grid item xs={1} align="right">
-                            <Fab style={{backgroundColor: '#0d6efd'}} aria-label="add"><SendIcon
-                                style={{color: '#fff'}}/></Fab>
-                        </Grid>
-                    </Grid>
-                </Grid>
+                <Routes>
+                    <Route path="/:uid" element={<ChatWindow/>}/>
+                </Routes>
             </Grid>
         </div>
     );
