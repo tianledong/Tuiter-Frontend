@@ -7,13 +7,10 @@ import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
 import ChatHistoryList from "./ChatHistoryList";
-import {Route, Routes, useLocation, useNavigate} from "react-router-dom";
+import {Route, Routes, useNavigate} from "react-router-dom";
 import ChatWindow from "./ChatWindow";
+import * as service from "../../services/security-service";
 
 const useStyles = makeStyles({
     table: {
@@ -37,36 +34,89 @@ const useStyles = makeStyles({
     }
 });
 
-const colors = ['olive', 'skyblue', 'seagreen', 'salmon', 'mediumpurple', 'orangered', 'darkgrey']
-
 const Chat = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
     const classes = useStyles();
+    const navigate = useNavigate();
 
     const [chattedUserList, setChattedUserList] = useState(null);
+    const [currentUser, setCurrentUser] = useState(null);
 
-    const initChat = () => {
+    const initChat = async () => {
+        try {
+            const user = await service.profile();
+            setCurrentUser(user);
+        } catch (e) {
+            navigate('/login');
+        }
+
         setChattedUserList([{
             "_id": "6214fda11beae98f3b39cd51",
             "username": "charlie",
-            "color" : colors[0]
+            "password": "charlie432",
+            "firstName": "Charlie",
+            "lastName": "Brown",
+            "email": "charlie@peanuts.com",
+            "accountType": "PERSONAL",
+            "maritalStatus": "SINGLE",
+            "joined": "2022-02-22T15:13:37.292Z",
+            "__v": 0
         }, {
             "_id": "6214fdbf1beae98f3b39cd53",
             "username": "nasa",
-            "color" : colors[1]
+            "password": "nasa321",
+            "firstName": "NASA",
+            "lastName": "Gov",
+            "email": "space@nasa.gov",
+            "accountType": "PERSONAL",
+            "maritalStatus": "SINGLE",
+            "joined": "2022-02-22T15:14:07.946Z",
+            "__v": 0
         }, {
-            "_id": "6214fdbf1beae98f3b39cd55",
-            "username": "Alice",
-            "color" : colors[2]
+            "_id": "6214fe6c1beae98f3b39cd5d",
+            "username": "spacex",
+            "password": "spacex420",
+            "firstName": "SpaceX",
+            "email": "elon@spacex.com",
+            "accountType": "PERSONAL",
+            "maritalStatus": "SINGLE",
+            "joined": "2022-02-22T15:17:00.806Z",
+            "__v": 0
         }, {
-            "_id": "6214fdbf1beae98f3b39cd57",
-            "username": "Bob",
-            "color" : colors[3]
+            "_id": "622504b51109a223dd3eda60",
+            "username": "moe",
+            "password": "moe123",
+            "email": "moe@stooges.com",
+            "accountType": "PERSONAL",
+            "maritalStatus": "SINGLE",
+            "joined": "2022-03-06T19:00:05.734Z",
+            "__v": 0
         }, {
-            "_id": "6214fdbf1beae98f3b39cd57",
-            "username": "Peter",
-            "color" : colors[4]
+            "_id": "622504b91109a223dd3eda68",
+            "username": "larry",
+            "password": "larry123",
+            "email": "larry@stooges.com",
+            "accountType": "PERSONAL",
+            "maritalStatus": "SINGLE",
+            "joined": "2022-03-06T19:00:09.706Z",
+            "__v": 0
+        }, {
+            "_id": "622504b91109a223dd3eda6a",
+            "username": "moe",
+            "password": "moe123",
+            "email": "moe@stooges.com",
+            "accountType": "PERSONAL",
+            "maritalStatus": "SINGLE",
+            "joined": "2022-03-06T19:00:09.711Z",
+            "__v": 0
+        }, {
+            "_id": "622504d21109a223dd3eda6e",
+            "username": "larry",
+            "password": "larry123",
+            "email": "larry@stooges.com",
+            "accountType": "PERSONAL",
+            "maritalStatus": "SINGLE",
+            "joined": "2022-03-06T19:00:34.798Z",
+            "__v": 0
         }]);
     }
 
@@ -76,28 +126,19 @@ const Chat = () => {
         <div>
             <Grid container component={Paper} className={classes.chat}>
                 <Grid item xs={3} className={classes.borderRight500}>
-                    <List>
-                        <ListItem>
-                            <ListItemIcon>
-                                <Avatar style={{backgroundColor: "salmon"}}>JW</Avatar>
-                            </ListItemIcon>
-                            <ListItemText primary="John Wick"/>
-                        </ListItem>
-                    </List>
-                    <Divider/>
                     <Grid item xs={12} style={{padding: '10px'}}>
-                        <TextField id="outlined-basic-email" label="Search" variant="outlined" fullWidth/>
+                        <TextField label="Search" id="search" margin="dense" type="search" variant="outlined"/>
                     </Grid>
                     <Divider/>
                     <List>
                         {chattedUserList &&
                             chattedUserList.map(user => <ChatHistoryList key={user._id + 'ch'} username={user.username}
-                            color={user.color} userID={user._id}/>)
+                                                                          userID={user._id}/>)
                         }
                     </List>
                 </Grid>
                 <Routes>
-                    <Route path="/:uid" element={<ChatWindow/>}/>
+                    <Route path="/:uid" element={<ChatWindow currentUser={currentUser}/>}/>
                 </Routes>
             </Grid>
         </div>

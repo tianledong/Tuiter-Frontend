@@ -25,7 +25,7 @@ const ChatHistoryList = (prop) => {
                 horizontal: 'left',
             }}
             >
-                <Avatar style={{backgroundColor: prop.color}}>{prop.username.charAt(0).toUpperCase()}</Avatar>
+                <Avatar>{prop.username.charAt(0).toUpperCase()}</Avatar>
             </Badge>
             <ListItemText classes={{primary: classes.listItemText}} primary={prop.username}>
                 {prop.username}</ListItemText>
