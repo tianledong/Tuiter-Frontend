@@ -20,14 +20,16 @@ const useStyles = makeStyles({
     chat: {
         width: '100%',
         height: '80vh',
-        marginTop: '30px'
+        marginTop: '30px',
 
     },
     headBG: {
         backgroundColor: '#e0e0e0'
     },
     borderRight500: {
-        borderRight: '1px solid #e0e0e0'
+        borderRight: '1px solid #e0e0e0',
+        overflowY: 'auto',
+        height: '100%'
     },
     messageArea: {
         height: '80vh',
@@ -41,6 +43,7 @@ const Chat = () => {
 
     const [chattedUserList, setChattedUserList] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
+    const [search, setSearch] = useState('');
 
     const initChat = async () => {
         try {
@@ -58,15 +61,24 @@ const Chat = () => {
 
     return (
         <div>
-            <Grid container component={Paper} className={classes.chat}>
+            <Grid container component={Paper} className={classes.chat} >
                 <Grid item xs={3} className={classes.borderRight500}>
                     <Grid item xs={12} style={{padding: '10px'}}>
-                        <TextField label="Search" id="search" margin="dense" type="search" variant="outlined"/>
+                        <TextField label="Search" id="search" margin="dense" type="text" variant="outlined"
+                                   onChange={event => {setSearch(event.target.value)}} value={search}/>
                     </Grid>
                     <Divider/>
-                    <List>
+                    <List style={{overflowY: 'auto'}}>
                         {chattedUserList &&
-                            chattedUserList.map(user => <ChatHistoryList key={user._id + 'ch'} username={user.username}
+                            chattedUserList
+                                .filter(val => {
+                                    if (search === '') {
+                                        return val;
+                                    } else if (val.username.toLowerCase().includes(search.toLowerCase())) {
+                                        return val;
+                                    }
+                                })
+                                .map(user => <ChatHistoryList key={user._id + 'ch'} username={user.username}
                                                                           userID={user._id}/>)
                         }
                     </List>

@@ -36,16 +36,16 @@ const ChatWindow = (prop) => {
         setChatUser(user);
         const chat = [{
             "_id": "6214fda11beae98f3b39cc51",
-            "from": "623df5fd8966eee45fa73fab",
-            "to": "623df5fd8966eee45fa77fab",
+            "sentBy": "623df5fd8966eee45fa73fab",
+            "sentTo": "623df5fd8966eee45fa77fab",
             "sentOn": "2022-03-25T17:03:57.434Z",
-            "chat": "Hi!!!"
+            "message": "Hi!!!"
         }, {
             "_id": "6214fda11beae98f3b39cc51",
-            "from": "623df5fd8966eee45fa77fab",
-            "to": "623df5fd8966eee45fa73fab",
+            "sentBy": "623df5fd8966eee45fa77fab",
+            "sentTo": "623df5fd8966eee45fa73fab",
             "sentOn": "2022-03-25T17:03:57.434Z",
-            "chat": "What's Up!!!"
+            "message": "What's Up!!!"
         }];
         setChatList(chat)
     }
@@ -65,7 +65,7 @@ const ChatWindow = (prop) => {
                 <Divider style={{backgroundColor: 'black'}}/>
                 {chatList &&
                     chatList.map((chat, index) => <ChatBubble key={chat._id + index} chat={chat}
-                    position={chat.from === prop.currentUser._id ? 'right' : 'left'}/>)
+                    position={chat.sentBy === prop.currentUser._id ? 'right' : 'left'}/>)
                 }
 
             </List>

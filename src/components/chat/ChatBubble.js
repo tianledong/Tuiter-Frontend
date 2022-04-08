@@ -6,7 +6,7 @@ const ChatBubble = (prop) => {
         <ListItem key={prop.chat._id + prop.chat.sentOn}>
         <Grid container>
             <Grid item xs={12}>
-                <ListItemText align={prop.position} primary={prop.chat.chat}/>
+                <ListItemText align={prop.position} primary={prop.chat.message}/>
             </Grid>
             <Grid item xs={12}>
                 <ListItemText align={prop.position} secondary={prop.chat.sentOn}/>
