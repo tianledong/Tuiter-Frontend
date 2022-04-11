@@ -2,6 +2,7 @@ import React from "react";
 import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 import * as service from "../../services/security-service";
+import socket from "../../Socket";
 
 export const Login = () => {
     const [loginUser, setLoginUser] = useState({});
@@ -9,6 +10,7 @@ export const Login = () => {
     const login = () =>
         service.login(loginUser)
             .then((user) => navigate('/profile/mytuits'))
+            .then(user => socket.connect())
             .catch(e => alert(e));
     return (
         <div>
