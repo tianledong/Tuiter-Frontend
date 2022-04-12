@@ -13,7 +13,7 @@ import {TextField} from "@mui/material";
 import Fab from "@material-ui/core/Fab";
 import SendIcon from "@material-ui/icons/Send";
 import socket from "../../Socket";
-import {userChatsUser} from "../../services/chat-service";
+import {findChatForUsers, userChatsUser} from "../../services/chat-service";
 
 const useStyles = makeStyles({
     messageArea: {
@@ -35,7 +35,7 @@ const ChatWindow = (prop) => {
     const {uid} = useParams();
 
     const sendChat = async () => {
-        const newChat = await userChatsUser('me', uid, {chatMessage});
+        const newChat = await userChatsUser('me', uid, {message: chatMessage});
         socket.emit("private message", {
             chatMessage,
             to: uid,
@@ -47,19 +47,7 @@ const ChatWindow = (prop) => {
     const initChat = async () => {
         const user = await findUserById(uid);
         setChatUser(user);
-        const chat = [{
-            "_id": "6214fda11beae98f3b39cc51",
-            "sentBy": "623df5fd8966eee45fa73fab",
-            "sentTo": "623df5fd8966eee45fa77fab",
-            "sentOn": "2022-03-25T17:03:57.434Z",
-            "message": "Hi!!!"
-        }, {
-            "_id": "6214fda11beae98f3b39cc51",
-            "sentBy": "623df5fd8966eee45fa77fab",
-            "sentTo": "623df5fd8966eee45fa73fab",
-            "sentOn": "2022-03-25T17:03:57.434Z",
-            "message": "What's Up!!!"
-        }];
+        const chat = await findChatForUsers('me', uid);
         setChatList(chat)
     }
 

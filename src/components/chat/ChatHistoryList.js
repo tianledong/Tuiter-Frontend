@@ -2,9 +2,10 @@ import {Badge} from "@mui/material";
 import Avatar from "@material-ui/core/Avatar";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItem from "@material-ui/core/ListItem";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {Link} from "react-router-dom";
+import socket from "../../Socket";
 
 
 const ChatHistoryList = (prop) => {
@@ -15,6 +16,14 @@ const ChatHistoryList = (prop) => {
     });
 
     const [newMessages, setNewMessages] = useState(0);
+
+    useEffect(() => {
+        socket.on("receive_message", (message, from) => {
+            if (prop.userID === from) {
+                setNewMessages(newMessages + 1);
+            }
+        });
+    }, [socket]);
 
     const classes = useStyles();
     return (

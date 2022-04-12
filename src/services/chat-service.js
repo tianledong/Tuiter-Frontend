@@ -10,10 +10,11 @@ const api = axios.create({
  * Records a user chats a user
  * @param uid user id
  * @param uid1 another user id
+ * @param message chat message
  * @return {Promise<AxiosResponse<any>>} a new chat object
  */
 export const userChatsUser = (uid, uid1, message) =>
-    api.post(`${BASE_URL}/users/${uid}/chats/${uid1}`, message)
+    api.post(`${BASE_URL}/api/users/${uid}/chats/${uid1}`, message)
         .then(chat => chat.data);
 
 /**
@@ -23,5 +24,5 @@ export const userChatsUser = (uid, uid1, message) =>
  * @return {Promise<AxiosResponse<any>>} chat objects
  */
 export const findChatForUsers = (uid, uid1) =>
-    api.get(`${BASE_URL}/users/${uid}/chats/${uid1}`)
+    api.get(`${BASE_URL}/api/users/${uid}/chats/${uid1}`)
         .then(chat => chat.data);
