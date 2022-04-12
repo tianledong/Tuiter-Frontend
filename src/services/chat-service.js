@@ -12,8 +12,8 @@ const api = axios.create({
  * @param uid1 another user id
  * @return {Promise<AxiosResponse<any>>} a new chat object
  */
-export const userChatsUser = (uid, uid1) =>
-    api.post(`${BASE_URL}/users/${uid}/chats/${uid1}`)
+export const userChatsUser = (uid, uid1, message) =>
+    api.post(`${BASE_URL}/users/${uid}/chats/${uid1}`, message)
         .then(chat => chat.data);
 
 /**

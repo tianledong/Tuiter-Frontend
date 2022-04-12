@@ -12,6 +12,8 @@ import ChatBubble from "./ChatBubble";
 import {TextField} from "@mui/material";
 import Fab from "@material-ui/core/Fab";
 import SendIcon from "@material-ui/icons/Send";
+import socket from "../../Socket";
+import {userChatsUser} from "../../services/chat-service";
 
 const useStyles = makeStyles({
     messageArea: {
@@ -29,7 +31,18 @@ const ChatWindow = (prop) => {
     const classes = useStyles();
     const [chatUser, setChatUser] = useState(null);
     const [chatList, setChatList] = useState(null);
+    const [chatMessage, setChatMessage] = useState('');
     const {uid} = useParams();
+
+    const sendChat = async () => {
+        const newChat = await userChatsUser('me', uid, {chatMessage});
+        socket.emit("private message", {
+            chatMessage,
+            to: uid,
+        });
+        setChatList([...chatList, newChat])
+        setChatMessage('');
+    }
 
     const initChat = async () => {
         const user = await findUserById(uid);
@@ -72,9 +85,12 @@ const ChatWindow = (prop) => {
             <Divider/>
             <Grid container className={classes.typingArea}>
                 <Grid item xs={11}>
-                    <TextField id="standard-basic-send" variant="standard" multiline label="Write a message..." fullWidth/>
+                    <TextField id="standard-basic-send" variant="standard" multiline label="Write a message..." fullWidth
+                    value={chatMessage} onChange={event => {
+                        setChatMessage(event.target.value)
+                    }}/>
                 </Grid>
-                <Grid item xs={1} align="right">
+                <Grid button item xs={1} align="right" onClick={() => sendChat()}>
                     <Fab style={{backgroundColor: '#0d6efd'}} aria-label="add"><SendIcon
                         style={{color: '#fff'}}/></Fab>
                 </Grid>
