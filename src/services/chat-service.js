@@ -13,15 +13,15 @@ const api = axios.create({
  * @return {Promise<AxiosResponse<any>>} a new chat object
  */
 export const userChatsUser = (uid, uid1) =>
-    api.post(`${USERS_API}/users/${uid}/chats/${uid1}`)
+    api.post(`${BASE_URL}/users/${uid}/chats/${uid1}`)
         .then(chat => chat.data);
 
 /**
  * Retrieval chat history between two users
  * @param uid user id
  * @param uid1 another user id
- * @return {Promise<AxiosResponse<any>>} a new chat object
+ * @return {Promise<AxiosResponse<any>>} chat objects
  */
 export const findChatForUsers = (uid, uid1) =>
-    api.get(`${USERS_API}/users/${uid}/chats/${uid1}`)
+    api.get(`${BASE_URL}/users/${uid}/chats/${uid1}`)
         .then(chat => chat.data);
