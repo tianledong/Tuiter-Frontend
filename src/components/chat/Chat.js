@@ -31,10 +31,6 @@ const useStyles = makeStyles({
         overflowY: 'auto',
         height: '100%'
     },
-    messageArea: {
-        height: '80vh',
-        overflowY: 'auto'
-    }
 });
 
 const Chat = () => {

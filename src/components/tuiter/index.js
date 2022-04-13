@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Navigation from "../navigation";
 import WhatsHappening from "../whats-happening";
 import {Routes, Route, HashRouter, Link} from "react-router-dom";
@@ -18,8 +18,17 @@ import TuitScreen from "../tuits/tuit-screen";
 import Chat from "../chat/Chat";
 import {Badge, Button} from "@mui/material";
 import Avatar from "@material-ui/core/Avatar";
+import socket from "../../Socket";
 
 function Tuiter() {
+    const [newMessages, setNewMessages] = useState(0);
+
+    useEffect(() => {
+        socket.on("receive_message", (({from}) => {
+            setNewMessages(newMessages + 1)
+        }));
+    }, [socket]);
+
     return (
         <HashRouter>
             <div className="container-fluid">
@@ -52,9 +61,12 @@ function Tuiter() {
                         <WhatsHappening/>
                     </div>
                 </div>
-                <Button style={{position: "absolute", left: '88%', top: '88%'}} component={Link} key='chat' to='/chats'>
+                <Button style={{position: "absolute", left: '88%', top: '88%'}} component={Link} key='chat' to='/chats'
+                onClick={() => {
+                    setNewMessages(0)
+                }}>
                     <Badge
-                        color="error" badgeContent={1} anchorOrigin={{
+                        color="error" badgeContent={newMessages} anchorOrigin={{
                         vertical: 'top',
                         horizontal: 'right',
                     }}

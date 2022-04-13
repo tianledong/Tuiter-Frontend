@@ -18,16 +18,19 @@ const ChatHistoryList = (prop) => {
     const [newMessages, setNewMessages] = useState(0);
 
     useEffect(() => {
-        socket.on("receive_message", (message, from) => {
+        socket.on("receive_message", (({from}) => {
+            console.log('getting dm');
             if (prop.userID === from) {
                 setNewMessages(newMessages + 1);
             }
-        });
+        }));
     }, [socket]);
 
     const classes = useStyles();
     return (
-        <ListItem button component={Link} key={prop.username} to={prop.userID}>
+        <ListItem button component={Link} key={prop.username} to={prop.userID} onClick={() => {
+            setNewMessages(0)
+        }}>
             <Badge
                 color="primary" badgeContent={newMessages} anchorOrigin={{
                 vertical: 'top',

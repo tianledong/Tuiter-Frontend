@@ -1,6 +1,5 @@
 import Grid from "@material-ui/core/Grid";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
 import Avatar from "@material-ui/core/Avatar";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
@@ -9,7 +8,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {findUserById} from "../../services/users-service";
 import {useParams} from 'react-router-dom';
 import ChatBubble from "./ChatBubble";
-import {TextField} from "@mui/material";
+import {ListSubheader, TextField} from "@mui/material";
 import Fab from "@material-ui/core/Fab";
 import SendIcon from "@material-ui/icons/Send";
 import socket from "../../Socket";
@@ -17,7 +16,11 @@ import {findChatForUsers, userChatsUser} from "../../services/chat-service";
 
 const useStyles = makeStyles({
     messageArea: {
-        height: '91%',
+        height: '74vh',
+        overflowY: 'auto',
+        paddingTop: 0,
+        marginTop: 2
+
     }, listItemText: {
         marginLeft: '6px'
     }, typingArea: {
@@ -37,10 +40,10 @@ const ChatWindow = (prop) => {
     const sendChat = async () => {
         const newChat = await userChatsUser('me', uid, {message: chatMessage});
         socket.emit("private message", {
-            chatMessage,
+            message: chatMessage,
             to: uid,
         });
-        setChatList([...chatList, newChat])
+        setChatList([newChat, ...chatList])
         setChatMessage('');
     }
 
@@ -48,22 +51,33 @@ const ChatWindow = (prop) => {
         const user = await findUserById(uid);
         setChatUser(user);
         const chat = await findChatForUsers('me', uid);
-        setChatList(chat)
+        setChatList(chat.reverse());
+    }
+
+    const reload = async () => {
+        let chat = await findChatForUsers('me', uid);
+        let chatReverse = chat.reverse();
+        setChatList(chatReverse)
     }
 
     useEffect(initChat, [uid]);
+    useEffect(async () => {
+        socket.on("receive_message", (({from}) => {
+            reload();
+        }));
+    }, [socket]);
 
 
     return (
         <Grid item xs={9}>
             <List className={classes.messageArea}>
-                {chatUser && <ListItem key={chatUser.username}>
+                {chatUser && <ListSubheader key={chatUser.username}>
                     <Avatar>{chatUser.username.charAt(0).toUpperCase()}</Avatar>
                     <ListItemText classes={{primary: classes.listItemText}}
                                   primary={chatUser.username}>{chatUser.username}</ListItemText>
-                </ListItem>}
+                    <Divider style={{backgroundColor: 'black'}}/>
+                </ListSubheader>}
 
-                <Divider style={{backgroundColor: 'black'}}/>
                 {chatList &&
                     chatList.map((chat, index) => <ChatBubble key={chat._id + index} chat={chat}
                     position={chat.sentBy === prop.currentUser._id ? 'right' : 'left'}/>)
