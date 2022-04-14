@@ -22,7 +22,8 @@ const useStyles = makeStyles({
         marginTop: 2
 
     }, listItemText: {
-        marginLeft: '6px'
+        marginLeft: '6px',
+        color: 'black'
     }, typingArea: {
         paddingTop: '5px',
         padding: '29px'
@@ -35,7 +36,31 @@ const ChatWindow = (prop) => {
     const [chatUser, setChatUser] = useState(null);
     const [chatList, setChatList] = useState(null);
     const [chatMessage, setChatMessage] = useState('');
+    const [color, setColor] = useState(null);
     const {currentUserId} = useParams();
+
+    const colors = ['olive', 'skyblue', 'seagreen', 'salmon', 'mediumpurple', 'orangered', 'darkgrey'];
+
+    const pinkColorByFirstLetter = (username) => {
+        const firstLetter = username.charAt(0).toUpperCase();
+        const charCode = parseInt(firstLetter, 36);
+        let index = 0;
+        if (charCode > 0 && charCode <= 10) {
+            index = 1;
+        } else if (charCode > 10  && charCode <= 15) {
+            index = 2;
+        } else if (charCode > 15  && charCode <= 20) {
+            index = 3;
+        } else if (charCode > 20  && charCode <= 25) {
+            index = 4;
+        } else if (charCode > 25  && charCode <= 30) {
+            index = 5;
+        } else if (charCode > 30  && charCode <= 35) {
+            index = 6;
+        }
+        return index;
+
+    }
 
     const sendChat = async () => {
         const newChat = await userChatsUser('me', currentUserId, {message: chatMessage});
@@ -52,6 +77,8 @@ const ChatWindow = (prop) => {
         setChatUser(user);
         const chat = await findChatForUsers('me', currentUserId);
         setChatList(chat.reverse());
+        const pickedColor = colors[pinkColorByFirstLetter(user.username)];
+        setColor(pickedColor);
     }
 
     const reload = async () => {
@@ -73,7 +100,7 @@ const ChatWindow = (prop) => {
             <List className={classes.messageArea}>
                 {chatUser && <ListSubheader key={chatUser.username}>
                     <ListItem key={chatUser.username + ' li'}>
-                        <Avatar>{chatUser.username.charAt(0).toUpperCase()}</Avatar>
+                        <Avatar style={{backgroundColor: color}}>{chatUser.username.charAt(0).toUpperCase()}</Avatar>
                         <ListItemText classes={{primary: classes.listItemText}}
                                       primary={chatUser.username}>{chatUser.username}</ListItemText>
                     </ListItem>

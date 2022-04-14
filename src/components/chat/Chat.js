@@ -49,10 +49,10 @@ const Chat = () => {
         } catch (e) {
             navigate('/login');
         }
-        const users = await usersService.findAllUsers();
-        const usersExcludeMe = users.filter(user => user._id !== currentUser._id);
+        const fetchedUsers = await usersService.findAllUsers();
+        const usersExcludeMe = fetchedUsers.filter(fetchedUser => fetchedUser._id !== currentUser._id);
 
-        setChattedUserList(usersExcludeMe);
+        setChattedUserList(fetchedUsers);
     }
 
     useEffect(initChat, []);
@@ -61,7 +61,7 @@ const Chat = () => {
         <div>
             <Grid container component={Paper} className={classes.chat}>
                 <Grid item xs={3} className={classes.borderRight500}>
-                    <ListSubheader>
+                    <ListSubheader style={{paddingLeft: 6, paddingRight: 6}}>
                         <Grid item xs={12}>
                             <TextField label="Search" id="search" margin="dense" type="text" variant="outlined"
                                        onChange={event => {
