@@ -12,6 +12,7 @@ import {Route, Routes, useNavigate} from "react-router-dom";
 import ChatWindow from "./ChatWindow";
 import * as service from "../../services/security-service";
 import * as usersService from "../../services/users-service";
+import {ListSubheader} from "@mui/material";
 
 const useStyles = makeStyles({
     table: {
@@ -58,13 +59,17 @@ const Chat = () => {
 
     return (
         <div>
-            <Grid container component={Paper} className={classes.chat} >
+            <Grid container component={Paper} className={classes.chat}>
                 <Grid item xs={3} className={classes.borderRight500}>
-                    <Grid item xs={12} style={{padding: '10px'}}>
-                        <TextField label="Search" id="search" margin="dense" type="text" variant="outlined"
-                                   onChange={event => {setSearch(event.target.value)}} value={search}/>
-                    </Grid>
-                    <Divider/>
+                    <ListSubheader>
+                        <Grid item xs={12}>
+                            <TextField label="Search" id="search" margin="dense" type="text" variant="outlined"
+                                       onChange={event => {
+                                           setSearch(event.target.value)
+                                       }} value={search}/>
+                        </Grid>
+                        <Divider/>
+                    </ListSubheader>
                     <List style={{overflowY: 'auto'}}>
                         {chattedUserList &&
                             chattedUserList
@@ -76,7 +81,7 @@ const Chat = () => {
                                     }
                                 })
                                 .map(user => <ChatHistoryList key={user._id + 'ch'} username={user.username}
-                                                                          userID={user._id}/>)
+                                                              userID={user._id}/>)
                         }
                     </List>
                 </Grid>

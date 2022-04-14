@@ -8,7 +8,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {findUserById} from "../../services/users-service";
 import {useParams} from 'react-router-dom';
 import ChatBubble from "./ChatBubble";
-import {ListSubheader, TextField} from "@mui/material";
+import {ListItem, ListSubheader, TextField} from "@mui/material";
 import Fab from "@material-ui/core/Fab";
 import SendIcon from "@material-ui/icons/Send";
 import socket from "../../Socket";
@@ -72,23 +72,26 @@ const ChatWindow = (prop) => {
         <Grid item xs={9}>
             <List className={classes.messageArea}>
                 {chatUser && <ListSubheader key={chatUser.username}>
-                    <Avatar>{chatUser.username.charAt(0).toUpperCase()}</Avatar>
-                    <ListItemText classes={{primary: classes.listItemText}}
-                                  primary={chatUser.username}>{chatUser.username}</ListItemText>
+                    <ListItem key={chatUser.username + ' li'}>
+                        <Avatar>{chatUser.username.charAt(0).toUpperCase()}</Avatar>
+                        <ListItemText classes={{primary: classes.listItemText}}
+                                      primary={chatUser.username}>{chatUser.username}</ListItemText>
+                    </ListItem>
                     <Divider style={{backgroundColor: 'black'}}/>
                 </ListSubheader>}
 
                 {chatList &&
                     chatList.map((chat, index) => <ChatBubble key={chat._id + index} chat={chat}
-                    position={chat.sentBy === prop.currentUser._id ? 'right' : 'left'}/>)
+                                                              position={chat.sentBy === prop.currentUser._id ? 'right' : 'left'}/>)
                 }
 
             </List>
             <Divider/>
             <Grid container className={classes.typingArea}>
                 <Grid item xs={11}>
-                    <TextField id="standard-basic-send" variant="standard" multiline label="Write a message..." fullWidth
-                    value={chatMessage} onChange={event => {
+                    <TextField id="standard-basic-send" variant="standard" multiline label="Write a message..."
+                               fullWidth
+                               value={chatMessage} onChange={event => {
                         setChatMessage(event.target.value)
                     }}/>
                 </Grid>
