@@ -80,7 +80,7 @@ const Chat = () => {
                     </List>
                 </Grid>
                 <Routes>
-                    <Route path="/:uid" element={<ChatWindow currentUser={currentUser}/>}/>
+                    <Route path="/:currentUserId" element={<ChatWindow currentUser={currentUser}/>}/>
                 </Routes>
             </Grid>
         </div>

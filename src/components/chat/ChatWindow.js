@@ -35,32 +35,32 @@ const ChatWindow = (prop) => {
     const [chatUser, setChatUser] = useState(null);
     const [chatList, setChatList] = useState(null);
     const [chatMessage, setChatMessage] = useState('');
-    const {uid} = useParams();
+    const {currentUserId} = useParams();
 
     const sendChat = async () => {
-        const newChat = await userChatsUser('me', uid, {message: chatMessage});
+        const newChat = await userChatsUser('me', currentUserId, {message: chatMessage});
         socket.emit("private message", {
             message: chatMessage,
-            to: uid,
+            to: currentUserId,
         });
         setChatList([newChat, ...chatList])
         setChatMessage('');
     }
 
     const initChat = async () => {
-        const user = await findUserById(uid);
+        const user = await findUserById(currentUserId);
         setChatUser(user);
-        const chat = await findChatForUsers('me', uid);
+        const chat = await findChatForUsers('me', currentUserId);
         setChatList(chat.reverse());
     }
 
     const reload = async () => {
-        let chat = await findChatForUsers('me', uid);
-        let chatReverse = chat.reverse();
-        setChatList(chatReverse)
+        const chats = await findChatForUsers('me', currentUserId);
+        const chatsReverse = chats.reverse();
+        setChatList(chatsReverse)
     }
 
-    useEffect(initChat, [uid]);
+    useEffect(initChat, [currentUserId]);
     useEffect(async () => {
         socket.on("receive_message", (({from}) => {
             reload();

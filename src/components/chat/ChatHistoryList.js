@@ -6,7 +6,7 @@ import React, {useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {Link} from "react-router-dom";
 import socket from "../../Socket";
-import {countTotalUnreadMessageForUsers} from "../../services/chat-service";
+import {countTotalUnreadMessageForUsers, updateRead} from "../../services/chat-service";
 
 
 const ChatHistoryList = (prop) => {
@@ -19,8 +19,10 @@ const ChatHistoryList = (prop) => {
     const [newMessages, setNewMessages] = useState(0);
 
     useEffect(async () => {
-        const count = await countTotalUnreadMessageForUsers('me', prop.userID);
-        setNewMessages(count);
+        socket.on("receive_message", (async ({from}) => {
+            const count = await countTotalUnreadMessageForUsers('me', prop.userID);
+            setNewMessages(count);
+        }))
     }, [socket]);
 
     useEffect(async () => {
@@ -30,8 +32,12 @@ const ChatHistoryList = (prop) => {
 
     const classes = useStyles();
     return (
-        <ListItem button component={Link} key={prop.username} to={prop.userID} onClick={() => {
-            setNewMessages(0)
+        <ListItem button component={Link} key={prop.username} to={prop.userID} onClick={async () => {
+            await updateRead('me', prop.userID);
+            setNewMessages(0);
+            socket.emit("refresh float button", {
+                message: 1
+            });
         }}>
             <Badge
                 color="primary" badgeContent={newMessages} anchorOrigin={{

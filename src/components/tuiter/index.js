@@ -19,6 +19,7 @@ import Chat from "../chat/Chat";
 import {Badge, Button} from "@mui/material";
 import Avatar from "@material-ui/core/Avatar";
 import {countTotalUnreadMessage} from "../../services/chat-service";
+import socket from "../../Socket";
 
 function Tuiter() {
     const [newMessages, setNewMessages] = useState(0);
@@ -27,12 +28,21 @@ function Tuiter() {
     useEffect(async () => {
         const count = await countTotalUnreadMessage('me');
         setNewMessages(count);
-    });
+    }, []);
+
+    useEffect( async () => {
+        socket.on("refresh_float_button", (async () => {
+            const count = await countTotalUnreadMessage('me')
+            setNewMessages(count);
+        }))
+    }, [socket]);
 
     useEffect(async () => {
-        const count = await countTotalUnreadMessage('me');
-        setNewMessages(count);
-    }, []);
+        socket.on("receive_message", (async ({from}) => {
+            const count = await countTotalUnreadMessage('me');
+            setNewMessages(count);
+        }))
+    }, [socket]);
 
     return (
         <HashRouter>
@@ -66,10 +76,7 @@ function Tuiter() {
                         <WhatsHappening/>
                     </div>
                 </div>
-                <Button style={{position: "absolute", left: '88%', top: '88%'}} component={Link} key='chat' to='/chats'
-                onClick={() => {
-                    setNewMessages(0)
-                }}>
+                <Button style={{position: "absolute", left: '88%', top: '88%'}} component={Link} key='chat' to='/chats'>
                     <Badge
                         color="error" badgeContent={newMessages} anchorOrigin={{
                         vertical: 'top',
