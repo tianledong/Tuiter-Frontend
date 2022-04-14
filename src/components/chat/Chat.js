@@ -49,8 +49,9 @@ const Chat = () => {
             navigate('/login');
         }
         const users = await usersService.findAllUsers();
+        const usersExcludeMe = users.filter(user => user._id !== currentUser._id);
 
-        setChattedUserList(users);
+        setChattedUserList(usersExcludeMe);
     }
 
     useEffect(initChat, []);
