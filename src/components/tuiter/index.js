@@ -18,16 +18,21 @@ import TuitScreen from "../tuits/tuit-screen";
 import Chat from "../chat/Chat";
 import {Badge, Button} from "@mui/material";
 import Avatar from "@material-ui/core/Avatar";
-import socket from "../../Socket";
+import {countTotalUnreadMessage} from "../../services/chat-service";
 
 function Tuiter() {
     const [newMessages, setNewMessages] = useState(0);
 
-    useEffect(() => {
-        socket.on("receive_message", (({from}) => {
-            setNewMessages(newMessages + 1)
-        }));
-    }, [socket]);
+
+    useEffect(async () => {
+        const count = await countTotalUnreadMessage('me');
+        setNewMessages(count);
+    });
+
+    useEffect(async () => {
+        const count = await countTotalUnreadMessage('me');
+        setNewMessages(count);
+    }, []);
 
     return (
         <HashRouter>

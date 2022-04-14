@@ -6,6 +6,7 @@ import React, {useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {Link} from "react-router-dom";
 import socket from "../../Socket";
+import {countTotalUnreadMessageForUsers} from "../../services/chat-service";
 
 
 const ChatHistoryList = (prop) => {
@@ -17,14 +18,15 @@ const ChatHistoryList = (prop) => {
 
     const [newMessages, setNewMessages] = useState(0);
 
-    useEffect(() => {
-        socket.on("receive_message", (({from}) => {
-            console.log('getting dm');
-            if (prop.userID === from) {
-                setNewMessages(newMessages + 1);
-            }
-        }));
+    useEffect(async () => {
+        const count = await countTotalUnreadMessageForUsers('me', prop.userID);
+        setNewMessages(count);
     }, [socket]);
+
+    useEffect(async () => {
+        const count = await countTotalUnreadMessageForUsers('me', prop.userID);
+        setNewMessages(count);
+    }, []);
 
     const classes = useStyles();
     return (
