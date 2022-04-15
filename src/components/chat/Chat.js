@@ -50,7 +50,6 @@ const Chat = () => {
             navigate('/login');
         }
         const fetchedUsers = await usersService.findAllUsers();
-        const usersExcludeMe = fetchedUsers.filter(fetchedUser => fetchedUser._id !== currentUser._id);
 
         setChattedUserList(fetchedUsers);
     }
@@ -71,13 +70,15 @@ const Chat = () => {
                         <Divider/>
                     </ListSubheader>
                     <List style={{overflowY: 'auto'}}>
-                        {chattedUserList &&
+                        {(chattedUserList && currentUser) &&
                             chattedUserList
                                 .filter(val => {
-                                    if (search === '') {
-                                        return val;
-                                    } else if (val.username.toLowerCase().includes(search.toLowerCase())) {
-                                        return val;
+                                    if (val._id !== currentUser._id) {
+                                        if (search === '') {
+                                            return val;
+                                        } else if (val.username.toLowerCase().includes(search.toLowerCase())) {
+                                            return val;
+                                        }
                                     }
                                 })
                                 .map(user => <ChatHistoryList key={user._id + 'ch'} username={user.username}
