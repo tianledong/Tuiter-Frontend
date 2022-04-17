@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Navigation from "../navigation";
 import WhatsHappening from "../whats-happening";
 import {Routes, Route, HashRouter, Link} from "react-router-dom";
@@ -18,8 +18,32 @@ import TuitScreen from "../tuits/tuit-screen";
 import Chat from "../chat/Chat";
 import {Badge, Button} from "@mui/material";
 import Avatar from "@material-ui/core/Avatar";
+import {countTotalUnreadMessage} from "../../services/chat-service";
+import socket from "../../Socket";
 
 function Tuiter() {
+    const [newMessages, setNewMessages] = useState(0);
+
+
+    useEffect(async () => {
+        const count = await countTotalUnreadMessage('me');
+        setNewMessages(count);
+    }, []);
+
+    useEffect( async () => {
+        socket.on("refresh_float_button", (async () => {
+            const count = await countTotalUnreadMessage('me')
+            setNewMessages(count);
+        }))
+    }, [socket]);
+
+    useEffect(async () => {
+        socket.on("receive_message", (async ({from}) => {
+            const count = await countTotalUnreadMessage('me');
+            setNewMessages(count);
+        }))
+    }, [socket]);
+
     return (
         <HashRouter>
             <div className="container-fluid">
@@ -54,7 +78,7 @@ function Tuiter() {
                 </div>
                 <Button style={{position: "absolute", left: '88%', top: '88%'}} component={Link} key='chat' to='/chats'>
                     <Badge
-                        color="error" badgeContent={1} anchorOrigin={{
+                        color="error" badgeContent={newMessages} anchorOrigin={{
                         vertical: 'top',
                         horizontal: 'right',
                     }}

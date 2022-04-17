@@ -12,6 +12,7 @@ import {Route, Routes, useNavigate} from "react-router-dom";
 import ChatWindow from "./ChatWindow";
 import * as service from "../../services/security-service";
 import * as usersService from "../../services/users-service";
+import {ListSubheader} from "@mui/material";
 
 const useStyles = makeStyles({
     table: {
@@ -31,10 +32,6 @@ const useStyles = makeStyles({
         overflowY: 'auto',
         height: '100%'
     },
-    messageArea: {
-        height: '80vh',
-        overflowY: 'auto'
-    }
 });
 
 const Chat = () => {
@@ -52,39 +49,45 @@ const Chat = () => {
         } catch (e) {
             navigate('/login');
         }
-        const users = await usersService.findAllUsers();
+        const fetchedUsers = await usersService.findAllUsers();
 
-        setChattedUserList(users);
+        setChattedUserList(fetchedUsers);
     }
 
     useEffect(initChat, []);
 
     return (
         <div>
-            <Grid container component={Paper} className={classes.chat} >
+            <Grid container component={Paper} className={classes.chat}>
                 <Grid item xs={3} className={classes.borderRight500}>
-                    <Grid item xs={12} style={{padding: '10px'}}>
-                        <TextField label="Search" id="search" margin="dense" type="text" variant="outlined"
-                                   onChange={event => {setSearch(event.target.value)}} value={search}/>
-                    </Grid>
-                    <Divider/>
+                    <ListSubheader style={{paddingLeft: 6, paddingRight: 6}}>
+                        <Grid item xs={12}>
+                            <TextField label="Search" id="search" margin="dense" type="text" variant="outlined"
+                                       onChange={event => {
+                                           setSearch(event.target.value)
+                                       }} value={search}/>
+                        </Grid>
+                        <Divider/>
+                    </ListSubheader>
                     <List style={{overflowY: 'auto'}}>
-                        {chattedUserList &&
+                        {(chattedUserList && currentUser) &&
                             chattedUserList
                                 .filter(val => {
-                                    if (search === '') {
-                                        return val;
-                                    } else if (val.username.toLowerCase().includes(search.toLowerCase())) {
-                                        return val;
+                                    if (val._id !== currentUser._id) {
+                                        if (search === '') {
+                                            return val;
+                                        } else if (val.username.toLowerCase().includes(search.toLowerCase())) {
+                                            return val;
+                                        }
                                     }
                                 })
                                 .map(user => <ChatHistoryList key={user._id + 'ch'} username={user.username}
-                                                                          userID={user._id}/>)
+                                                              userID={user._id}/>)
                         }
                     </List>
                 </Grid>
                 <Routes>
-                    <Route path="/:uid" element={<ChatWindow currentUser={currentUser}/>}/>
+                    <Route path="/:currentUserId" element={<ChatWindow currentUser={currentUser}/>}/>
                 </Routes>
             </Grid>
         </div>

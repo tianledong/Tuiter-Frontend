@@ -6,6 +6,7 @@ import TuitsAndReplies from "./tuits-and-replies";
 import Media from "./media";
 import MyLikes from "./my-likes";
 import MyDislikes from "./my-dislikes";
+import socket from "../../Socket";
 
 /**
  * Component for showing profile page of the user.
@@ -26,7 +27,8 @@ const Profile = () => {
     }, []);
     const logout = () => {
         service.logout()
-            .then(() => navigate('/login'));
+            .then(() => navigate('/login'))
+            .then(() => socket.disconnect());
     }
     return (
         <div className="ttr-profile">
