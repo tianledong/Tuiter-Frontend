@@ -1,0 +1,14 @@
+[
+  {
+    "_id":  "123",
+    "message": "Alice's chat"
+  },
+  {
+    "_id":  "234",
+    "message": "Bob's chat"
+  },
+  {
+    "_id":  "345",
+    "message": "Charlie's chat"
+  }
+]
